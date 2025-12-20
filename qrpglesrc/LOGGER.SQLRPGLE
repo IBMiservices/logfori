@@ -54,6 +54,8 @@ dcl-c LOG_PREFIX_WARNING 'WARNING';
 dcl-c LOG_PREFIX_ERROR 'ERROR';
 dcl-c LOG_PREFIX_FATAL 'FATAL';
 
+dcl-c NEWLINE x'25';
+
 //*************************************************************
 // Variables globales
 //*************************************************************
@@ -84,7 +86,7 @@ dcl-proc Logger_Init export;
   if not gInitialized;
     gInitialized = *on;
     gLogLevel = LOG_LEVEL_INFO;
-    Logger_Info('Service de journalisation initialisé');
+    // Ne pas logger ici pour éviter la récursion pendant l'initialisation
   endif;
 end-proc;
 
@@ -93,7 +95,8 @@ end-proc;
 ///
 dcl-proc Logger_Term export;
   if gInitialized;
-    Logger_Info('Service de journalisation terminé');
+    // Logger le message avant de désactiver le service
+    writeLog(LOG_PREFIX_INFO : 'Service de journalisation terminé');
     gInitialized = *off;
   endif;
 end-proc;
@@ -226,7 +229,7 @@ dcl-proc writeLog;
   fullMessage = %trim(timestamp) + ' [' + %trim(prefix) + '] ' + %trim(message);
 
   // Écrire dans stdout (journal système)
-  Qp0zLprintf(%trim(fullMessage) + x'25');
+  Qp0zLprintf(%trim(fullMessage) + NEWLINE);
 
   // Optionnel: Écrire dans QSYSOPR (décommenté si nécessaire)
   // cmd = 'SNDMSG MSG(''' + %trim(message) + ''') TOUSR(QSYSOPR)';
