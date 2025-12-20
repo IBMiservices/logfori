@@ -1,0 +1,65 @@
+/*==================================================================*/
+/* CRTLOGGER - Programme CL pour créer le service LOGGER           */
+/*                                                                  */
+/* Ce programme compile le module LOGGER et crée le programme de   */
+/* service avec les exports appropriés.                            */
+/*==================================================================*/
+
+             PGM        PARM(&LIB)
+
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERROR))
+
+/*------------------------------------------------------------------*/
+/* Créer le module LOGGER                                           */
+/*------------------------------------------------------------------*/
+             CRTSQLRPGI OBJ(&LIB/LOGGER) +
+                       SRCSTMF('qrpglesrc/LOGGER.SQLRPGLE') +
+                       OBJTYPE(*MODULE) +
+                       DBGVIEW(*SOURCE) +
+                       REPLACE(*YES) +
+                       COMMIT(*NONE) +
+                       COMPILEOPT('TGTRLS(*CURRENT)')
+
+             SNDPGMMSG  MSG('Module LOGGER créé avec succès') +
+                       TOPGMQ(*EXT) +
+                       MSGTYPE(*INFO)
+
+/*------------------------------------------------------------------*/
+/* Créer le programme de service LOGGER                             */
+/*------------------------------------------------------------------*/
+             CRTSRVPGM  SRVPGM(&LIB/LOGGER) +
+                       MODULE(&LIB/LOGGER) +
+                       EXPORT(*SRCFILE) +
+                       SRCSTMF('qsrvsrc/LOGGER.BND') +
+                       BNDSRVPGM(*NONE) +
+                       ACTGRP(*CALLER) +
+                       DETAIL(*BASIC) +
+                       STGMDL(*INHERIT) +
+                       REPLACE(*YES) +
+                       TEXT('Service de journalisation')
+
+             SNDPGMMSG  MSG('Programme de service LOGGER créé avec +
+                       succès dans la bibliothèque ' *CAT &LIB) +
+                       TOPGMQ(*EXT) +
+                       MSGTYPE(*COMP)
+
+             GOTO       CMDLBL(END)
+
+/*------------------------------------------------------------------*/
+/* Gestion des erreurs                                              */
+/*------------------------------------------------------------------*/
+ ERROR:      RCVMSG     MSGTYPE(*EXCP) +
+                       MSGID(&MSGID) +
+                       MSGDTA(&MSGDTA)
+
+             SNDPGMMSG  MSGID(&MSGID) +
+                       MSGF(QCPFMSG) +
+                       MSGDTA(&MSGDTA) +
+                       TOPGMQ(*EXT) +
+                       MSGTYPE(*ESCAPE)
+
+ END:        ENDPGM

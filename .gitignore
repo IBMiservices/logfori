@@ -1,0 +1,24 @@
+# Build artifacts
+*.MODULE
+*.PGM
+*.SRVPGM
+*.BNDDIR
+
+# IBM i temporary files
+*.TMP
+*.tmp
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test output
+test_output/
+logs/
