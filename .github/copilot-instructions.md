@@ -27,7 +27,7 @@ ctl-opt nomain thread(*serialize);  // Obligatoire pour modules service
 // Noms exportés: PascalCase (LoggerInit, LoggerInfo)
 // Variables locales: camelCase
 // Constantes: UPPER_SNAKE_CASE avec préfixes LOG_*
-// Commentaires: Français avec documentation iledocs (///)
+// Commentaires: Français avec documentation ILEDoc (///)
 ```
 
 ### Déclarations obligatoires
