@@ -16,27 +16,30 @@
 // Prototypes des procédures du service LOGGER
 //*************************************************************
 
-dcl-pr Logger_Init extproc('Logger_Init') end-pr;
-dcl-pr Logger_Term extproc('Logger_Term') end-pr;
-dcl-pr Logger_Debug extproc('Logger_Debug');
+dcl-pr Logger_Init;
+end-pr;
+dcl-pr Logger_Term;
+end-pr;
+dcl-pr Logger_Debug;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Info extproc('Logger_Info');
+dcl-pr Logger_Info;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Warning extproc('Logger_Warning');
+dcl-pr Logger_Warning;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Error extproc('Logger_Error');
+dcl-pr Logger_Error;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Fatal extproc('Logger_Fatal');
+dcl-pr Logger_Fatal;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_SetLevel extproc('Logger_SetLevel');
+dcl-pr Logger_SetLevel;
   level int(10) const;
 end-pr;
-dcl-pr Logger_GetLevel int(10) extproc('Logger_GetLevel') end-pr;
+dcl-pr Logger_GetLevel int(10);
+end-pr;
 
 //*************************************************************
 // Constantes pour les niveaux de journalisation

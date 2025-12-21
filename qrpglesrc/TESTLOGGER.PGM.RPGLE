@@ -6,13 +6,13 @@
 /// fournies par le programme de service LOGGER.
 ///
 
-ctl-opt dftactgrp(*no) actgrp(*new) bnddir('SERVICE');
+ctl-opt dftactgrp(*no) actgrp('TESTLOGGER') bnddir('SERVICES');
 
 //*************************************************************
 // Prototypes des fonctions du service LOGGER
 //*************************************************************
 
-/copy 'qcpysrc,loggerapi'
+/copy 'LOGGERAPI.RPGLEINC'
 
 
 //*************************************************************
