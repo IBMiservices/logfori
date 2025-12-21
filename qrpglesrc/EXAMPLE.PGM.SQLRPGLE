@@ -6,7 +6,7 @@
 /// pour simplifier l'utilisation du service de journalisation.
 ///
 
-ctl-opt dftactgrp(*no) actgrp(*new) bnddir('LOGGER');
+ctl-opt dftactgrp(*no) actgrp(*new) bnddir('SERVICES');
 
 //*************************************************************
 // Inclure l'API du service LOGGER
