@@ -9,22 +9,22 @@ STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('LOGGER V1.0')
   /*--------------------------------------------------------------*/
   /* Procédures d'initialisation et de terminaison               */
   /*--------------------------------------------------------------*/
-  EXPORT SYMBOL(Logger_Init)
-  EXPORT SYMBOL(Logger_Term)
+  EXPORT SYMBOL(LoggerInit)
+  EXPORT SYMBOL(LoggerTerm)
 
   /*--------------------------------------------------------------*/
   /* Procédures de journalisation par niveau                     */
   /*--------------------------------------------------------------*/
-  EXPORT SYMBOL(Logger_Debug)
-  EXPORT SYMBOL(Logger_Info)
-  EXPORT SYMBOL(Logger_Warning)
-  EXPORT SYMBOL(Logger_Error)
-  EXPORT SYMBOL(Logger_Fatal)
+  EXPORT SYMBOL(LoggerDebug)
+  EXPORT SYMBOL(LoggerInfo)
+  EXPORT SYMBOL(LoggerWarning)
+  EXPORT SYMBOL(LoggerError)
+  EXPORT SYMBOL(LoggerFatal)
 
   /*--------------------------------------------------------------*/
   /* Procédures de configuration                                 */
   /*--------------------------------------------------------------*/
-  EXPORT SYMBOL(Logger_SetLevel)
-  EXPORT SYMBOL(Logger_GetLevel)
+  EXPORT SYMBOL(LoggerSetLevel)
+  EXPORT SYMBOL(LoggerGetLevel)
 
 ENDPGMEXP

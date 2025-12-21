@@ -7,23 +7,36 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
-### Ajouté
-
-- Support complet pour IBM i TOBI (Tool for Building ILE)
-  - Configuration `iproj.json` avec métadonnées du projet
-  - `Rules.mk` avec cibles Make automatiques (all, service, test, clean)
-  - Documentation complète dans `BUILD_WITH_TOBI.md`
-  - Script de validation `validate_tobi.sh`
-  - Exemple de workflow GitHub Actions (`.github/workflows/build-example.yml.disabled`)
-- Amélioration du `.gitignore` pour inclure les artefacts TOBI
-- Mise à jour du README avec les méthodes de compilation TOBI
-- Mise à jour des instructions pour agents IA avec informations TOBI
-
 ### Modifié
 
-- Réorganisation de la documentation de compilation dans README.md
-- Instructions Copilot enrichies avec workflows TOBI
-- Priorité donnée à TOBI comme méthode de compilation recommandée
+- **BREAKING**: Noms de procédures en PascalCase sans underscore
+  - `Logger_Init` → `LoggerInit`
+  - `Logger_Term` → `LoggerTerm`
+  - `Logger_Debug` → `LoggerDebug`
+  - `Logger_Info` → `LoggerInfo`
+  - `Logger_Warning` → `LoggerWarning`
+  - `Logger_Error` → `LoggerError`
+  - `Logger_Fatal` → `LoggerFatal`
+  - `Logger_SetLevel` → `LoggerSetLevel`
+  - `Logger_GetLevel` → `LoggerGetLevel`
+- **BREAKING**: TOBI est maintenant la méthode de build officielle et unique
+  - Suppression des scripts shell `build.sh` et `build_test.sh`
+  - Configuration complète via `iproj.json` et `Rules.mk`
+  - Cibles TOBI : `compile`, `test`, `example`, `clean`
+- Documentation complètement révisée pour TOBI
+  - README.md simplifié avec focus sur TOBI
+  - CONTRIBUTING.md mis à jour avec commandes TOBI
+  - Instructions Copilot (.github/copilot-instructions.md) alignées sur TOBI
+- Programme d'exemple renommé : `EXAMPLE.SQLRPGLE` → `EXAMPLE.PGM.SQLRPGLE`
+- Programme de test renommé : `TESTLOGGER.SQLRPGLE` → `TESTLOGGER.PGM.RPGLE`
+- Utilisation du fichier de copie `LOGGERAPI.RPGLEINC` dans les exemples
+- Binding directory renommé : `LOGGER` → `SERVICES`
+
+### Ajouté
+
+- Fichier de copie `qcpysrc/LOGGERAPI.RPGLEINC` pour faciliter l'utilisation de l'API
+- `Rules.mk` dans tous les répertoires sources (qrpglesrc, qsrvsrc, qbndsrc)
+- Configuration `iproj.json` avec métadonnées du projet et chemins d'inclusion
 
 ## [1.0.0] - 2025-12-20
 
@@ -32,15 +45,15 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Module de service de journalisation principal (`LOGGER.SQLRPGLE`)
 - Cinq niveaux de log : DEBUG, INFO, WARNING, ERROR, FATAL
 - Fonctions de base :
-  - `Logger_Init()` - Initialisation du service
-  - `Logger_Term()` - Terminaison du service
-  - `Logger_Debug()` - Messages de débogage
-  - `Logger_Info()` - Messages d'information
-  - `Logger_Warning()` - Messages d'avertissement
-  - `Logger_Error()` - Messages d'erreur
-  - `Logger_Fatal()` - Messages d'erreur fatale
-  - `Logger_SetLevel()` - Configuration du niveau de log
-  - `Logger_GetLevel()` - Récupération du niveau de log actuel
+  - `LoggerInit()` - Initialisation du service
+  - `LoggerTerm()` - Terminaison du service
+  - `LoggerDebug()` - Messages de débogage
+  - `LoggerInfo()` - Messages d'information
+  - `LoggerWarning()` - Messages d'avertissement
+  - `LoggerError()` - Messages d'erreur
+  - `LoggerFatal()` - Messages d'erreur fatale
+  - `LoggerSetLevel()` - Configuration du niveau de log
+  - `LoggerGetLevel()` - Récupération du niveau de log actuel
 - Programme de service (*SRVPGM) avec exports définis dans `LOGGER.BND`
 - Support thread-safe avec `thread(*serialize)`
 - Horodatage automatique des messages au format ISO
@@ -56,7 +69,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 ### Fonctionnalités
 
 - Filtrage des messages par niveau de log
-- Écriture dans stdout via `Qp0zLprintf`
+- Écriture dans le joblog via `Qp0zLprintf`
 - Support des caractères spéciaux français
 - Configuration dynamique du niveau de log
 - Documentation complète en français

@@ -22,48 +22,48 @@ ctl-opt dftactgrp(*no) actgrp('TESTLOGGER') bnddir('SERVICES');
 dcl-s currentLevel int(10);
 
 // Initialiser le service de journalisation
-Logger_Init();
+LoggerInit();
 
 // Test des différents niveaux de log avec niveau INFO par défaut
-Logger_Info('=== Test avec niveau INFO (défaut) ===');
-Logger_Debug('Ce message ne devrait pas apparaître');
-Logger_Info('Message d''information');
-Logger_Warning('Message d''avertissement');
-Logger_Error('Message d''erreur');
-Logger_Fatal('Message d''erreur fatale');
+LoggerInfo('=== Test avec niveau INFO (défaut) ===');
+LoggerDebug('Ce message ne devrait pas apparaître');
+LoggerInfo('Message d''information');
+LoggerWarning('Message d''avertissement');
+LoggerError('Message d''erreur');
+LoggerFatal('Message d''erreur fatale');
 
 // Changer le niveau à DEBUG
-Logger_SetLevel(LOG_LEVEL_DEBUG);
-currentLevel = Logger_GetLevel();
-Logger_Info('=== Niveau changé à DEBUG (' + %char(currentLevel) + ') ===');
-Logger_Debug('Ce message de débogage devrait maintenant apparaître');
-Logger_Info('Message d''information avec niveau DEBUG');
+LoggerSetLevel(LOG_LEVEL_DEBUG);
+currentLevel = LoggerGetLevel();
+LoggerInfo('=== Niveau changé à DEBUG (' + %char(currentLevel) + ') ===');
+LoggerDebug('Ce message de débogage devrait maintenant apparaître');
+LoggerInfo('Message d''information avec niveau DEBUG');
 
 // Changer le niveau à WARNING
-Logger_SetLevel(LOG_LEVEL_WARNING);
-currentLevel = Logger_GetLevel();
-Logger_Info('=== Niveau changé à WARNING (' + %char(currentLevel) + ') ===');
-Logger_Debug('Ce message DEBUG ne devrait pas apparaître');
-Logger_Info('Ce message INFO ne devrait pas apparaître');
-Logger_Warning('Ce message WARNING devrait apparaître');
-Logger_Error('Ce message ERROR devrait apparaître');
+LoggerSetLevel(LOG_LEVEL_WARNING);
+currentLevel = LoggerGetLevel();
+LoggerInfo('=== Niveau changé à WARNING (' + %char(currentLevel) + ') ===');
+LoggerDebug('Ce message DEBUG ne devrait pas apparaître');
+LoggerInfo('Ce message INFO ne devrait pas apparaître');
+LoggerWarning('Ce message WARNING devrait apparaître');
+LoggerError('Ce message ERROR devrait apparaître');
 
 // Changer le niveau à ERROR
-Logger_SetLevel(LOG_LEVEL_ERROR);
-currentLevel = Logger_GetLevel();
-Logger_Info('=== Niveau changé à ERROR (' + %char(currentLevel) + ') ===');
-Logger_Warning('Ce message WARNING ne devrait pas apparaître');
-Logger_Error('Ce message ERROR devrait apparaître');
-Logger_Fatal('Ce message FATAL devrait apparaître');
+LoggerSetLevel(LOG_LEVEL_ERROR);
+currentLevel = LoggerGetLevel();
+LoggerInfo('=== Niveau changé à ERROR (' + %char(currentLevel) + ') ===');
+LoggerWarning('Ce message WARNING ne devrait pas apparaître');
+LoggerError('Ce message ERROR devrait apparaître');
+LoggerFatal('Ce message FATAL devrait apparaître');
 
 // Test avec des messages complexes
-Logger_SetLevel(LOG_LEVEL_INFO);
-Logger_Info('=== Test avec messages complexes ===');
-Logger_Info('Test avec des caractères spéciaux: àéèêô ç');
-Logger_Info('Test avec des nombres: ' + %char(12345));
-Logger_Warning('Test d''avertissement avec apostrophe');
+LoggerSetLevel(LOG_LEVEL_INFO);
+LoggerInfo('=== Test avec messages complexes ===');
+LoggerInfo('Test avec des caractères spéciaux: àéèêô ç');
+LoggerInfo('Test avec des nombres: ' + %char(12345));
+LoggerWarning('Test d''avertissement avec apostrophe');
 
 // Terminer le service de journalisation
-Logger_Term();
+LoggerTerm();
 
 *inlr = *on;

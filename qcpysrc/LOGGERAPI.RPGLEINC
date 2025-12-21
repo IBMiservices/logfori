@@ -16,29 +16,29 @@
 // Prototypes des procédures du service LOGGER
 //*************************************************************
 
-dcl-pr Logger_Init;
+dcl-pr LoggerInit;
 end-pr;
-dcl-pr Logger_Term;
+dcl-pr LoggerTerm;
 end-pr;
-dcl-pr Logger_Debug;
+dcl-pr LoggerDebug;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Info;
+dcl-pr LoggerInfo;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Warning;
+dcl-pr LoggerWarning;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Error;
+dcl-pr LoggerError;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_Fatal;
+dcl-pr LoggerFatal;
   message varchar(512) const;
 end-pr;
-dcl-pr Logger_SetLevel;
+dcl-pr LoggerSetLevel;
   level int(10) const;
 end-pr;
-dcl-pr Logger_GetLevel int(10);
+dcl-pr LoggerGetLevel int(10);
 end-pr;
 
 //*************************************************************

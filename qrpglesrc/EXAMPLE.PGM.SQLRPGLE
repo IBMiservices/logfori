@@ -19,24 +19,24 @@ ctl-opt dftactgrp(*no) actgrp(*new) bnddir('SERVICES');
 //*************************************************************
 
 // Initialiser le service de journalisation
-Logger_Init();
+LoggerInit();
 
 // Exemple d'utilisation dans une application
-Logger_Info('Application exemple démarrée');
-Logger_Debug('Variable1 = ' + %char(100));
+LoggerInfo('Application exemple démarrée');
+LoggerDebug('Variable1 = ' + %char(100));
 
 // Simuler un traitement
-Logger_Info('Début du traitement des données');
+LoggerInfo('Début du traitement des données');
 
 // Simuler un avertissement
-Logger_Warning('Enregistrement en double détecté, ignoré');
+LoggerWarning('Enregistrement en double détecté, ignoré');
 
 // Simuler une erreur gérée
-Logger_Error('Impossible de lire le fichier CONFIG, valeurs par défaut utilisées');
+LoggerError('Impossible de lire le fichier CONFIG, valeurs par défaut utilisées');
 
-Logger_Info('Traitement terminé avec succès');
+LoggerInfo('Traitement terminé avec succès');
 
 // Terminer le service
-Logger_Term();
+LoggerTerm();
 
 *inlr = *on;

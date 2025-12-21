@@ -60,9 +60,9 @@ end-pr;
 //*************************************************************
 
 ///
-/// Logger_Init - Initialise le service de journalisation
+/// LoggerInit - Initialise le service de journalisation
 ///
-dcl-proc Logger_Init export;
+dcl-proc LoggerInit export;
   if not gInitialized;
     gInitialized = *on;
     gLogLevel = LOG_LEVEL_INFO;
@@ -71,9 +71,9 @@ dcl-proc Logger_Init export;
 end-proc;
 
 ///
-/// Logger_Term - Termine le service de journalisation
+/// LoggerTerm - Termine le service de journalisation
 ///
-dcl-proc Logger_Term export;
+dcl-proc LoggerTerm export;
   if gInitialized;
     // Logger le message avant de désactiver le service
     writeLog(LOG_PREFIX_INFO : 'Service de journalisation terminé');
@@ -82,11 +82,11 @@ dcl-proc Logger_Term export;
 end-proc;
 
 ///
-/// Logger_Debug - Enregistre un message de débogage
+/// LoggerDebug - Enregistre un message de débogage
 ///
 /// @param message Message à enregistrer
 ///
-dcl-proc Logger_Debug export;
+dcl-proc LoggerDebug export;
   dcl-pi *n;
     message varchar(512) const;
   end-pi;
@@ -99,11 +99,11 @@ dcl-proc Logger_Debug export;
 end-proc;
 
 ///
-/// Logger_Info - Enregistre un message d'information
+/// LoggerInfo - Enregistre un message d'information
 ///
 /// @param message Message à enregistrer
 ///
-dcl-proc Logger_Info export;
+dcl-proc LoggerInfo export;
   dcl-pi *n;
     message varchar(512) const;
   end-pi;
@@ -114,11 +114,11 @@ dcl-proc Logger_Info export;
 end-proc;
 
 ///
-/// Logger_Warning - Enregistre un message d'avertissement
+/// LoggerWarning - Enregistre un message d'avertissement
 ///
 /// @param message Message à enregistrer
 ///
-dcl-proc Logger_Warning export;
+dcl-proc LoggerWarning export;
   dcl-pi *n;
     message varchar(512) const;
   end-pi;
@@ -129,11 +129,11 @@ dcl-proc Logger_Warning export;
 end-proc;
 
 ///
-/// Logger_Error - Enregistre un message d'erreur
+/// LoggerError - Enregistre un message d'erreur
 ///
 /// @param message Message à enregistrer
 ///
-dcl-proc Logger_Error export;
+dcl-proc LoggerError export;
   dcl-pi *n;
     message varchar(512) const;
   end-pi;
@@ -144,11 +144,11 @@ dcl-proc Logger_Error export;
 end-proc;
 
 ///
-/// Logger_Fatal - Enregistre un message d'erreur fatale
+/// LoggerFatal - Enregistre un message d'erreur fatale
 ///
 /// @param message Message à enregistrer
 ///
-dcl-proc Logger_Fatal export;
+dcl-proc LoggerFatal export;
   dcl-pi *n;
     message varchar(512) const;
   end-pi;
@@ -159,11 +159,11 @@ dcl-proc Logger_Fatal export;
 end-proc;
 
 ///
-/// Logger_SetLevel - Définit le niveau de journalisation
+/// LoggerSetLevel - Définit le niveau de journalisation
 ///
 /// @param level Niveau de journalisation (0=DEBUG, 1=INFO, 2=WARNING, 3=ERROR, 4=FATAL)
 ///
-dcl-proc Logger_SetLevel export;
+dcl-proc LoggerSetLevel export;
   dcl-pi *n;
     level int(10) const;
   end-pi;
@@ -174,11 +174,11 @@ dcl-proc Logger_SetLevel export;
 end-proc;
 
 ///
-/// Logger_GetLevel - Retourne le niveau de journalisation actuel
+/// LoggerGetLevel - Retourne le niveau de journalisation actuel
 ///
 /// @return Niveau de journalisation actuel
 ///
-dcl-proc Logger_GetLevel export;
+dcl-proc LoggerGetLevel export;
   dcl-pi *n int(10) end-pi;
 
   return gLogLevel;
@@ -210,7 +210,7 @@ dcl-proc writeLog;
   // Construire le message complet
   fullMessage = %trim(timestamp) + ' [' + %trim(prefix) + '] ' + %trim(message);
 
-  // Écrire dans stdout (journal système)
+  // Écrire dans le joblog (journal système)
   Qp0zLprintf(%trim(fullMessage) + NEWLINE);
 
   // Optionnel: Écrire dans QSYSOPR (décommenté si nécessaire)

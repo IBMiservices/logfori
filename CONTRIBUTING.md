@@ -24,8 +24,8 @@ Merci de votre intérêt pour contribuer à LOGFORI ! Ce document explique comme
 - Utiliser le format libre (`**FREE`)
 - Indentation : 2 espaces
 - Commentaires en français
-- Documentation JavaDoc pour les procédures exportées
-- Noms de procédures en PascalCase avec préfixe `Logger_`
+- Documentation ILEDoc pour les procédures exportées
+- Noms de procédures en PascalCase sans underscore
 - Variables locales en camelCase
 - Constantes en UPPER_SNAKE_CASE
 
@@ -33,11 +33,11 @@ Merci de votre intérêt pour contribuer à LOGFORI ! Ce document explique comme
 
 ```rpgle
 ///
-/// Logger_Info - Enregistre un message d'information
+/// LoggerInfo - Enregistre un message d'information
 ///
 /// @param message Message à enregistrer
 ///
-dcl-proc Logger_Info export;
+dcl-proc LoggerInfo export;
   dcl-pi *n varchar(512) const;
     message varchar(512) const;
   end-pi;
@@ -50,10 +50,24 @@ end-proc;
 
 Avant de soumettre une Pull Request :
 
-1. Compiler le service avec `./build.sh`
-2. Compiler et exécuter le programme de test avec `./build_test.sh`
-3. Vérifier que tous les niveaux de log fonctionnent correctement
-4. Tester avec vos changements dans un programme réel
+1. Compiler le service avec `makei compile`
+2. Compiler les tests avec `makei test`
+3. Exécuter le programme de test : `system "CALL &CURLIB/TESTLOGGER"`
+4. Vérifier que tous les niveaux de log fonctionnent correctement
+5. Compiler l'exemple avec `makei example`
+6. Tester avec vos changements dans un programme réel
+
+### Commandes TOBI utiles
+
+```bash
+makei compile        # Compile le service LOGGER
+makei test          # Compile le programme de test
+makei example       # Compile le programme d'exemple
+makei clean         # Nettoie les objets compilés
+makei OBJLIB=MYLIB compile  # Compile dans une bibliothèque spécifique
+
+# Exécuter les tests (après compilation)
+CALL &CURLIB/TESTLOGGER"```
 
 ## 🚀 Processus de contribution
 
@@ -89,7 +103,7 @@ Voici quelques idées pour contribuer :
 
 ### Fonctionnalités souhaitées
 
-- [ ] Support pour écrire dans un fichier IFS en plus de stdout
+- [ ] Support pour écrire dans un fichier IFS en plus du joblog
 - [ ] Support pour écrire dans une table de base de données
 - [ ] Rotation automatique des logs
 - [ ] Filtrage par catégorie ou module
