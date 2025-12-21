@@ -23,16 +23,41 @@ LOGFORI est un service de journalisation léger et efficace pour les application
 
 ### Compilation
 
+#### Méthode 1 : Avec IBM i TOBI (recommandé)
+
+```bash
+# Depuis le répertoire du projet
+makei all
+
+# Ou avec une bibliothèque spécifique
+makei OBJLIB=MYLIB all
+
+# Compiler et tester
+makei test
+```
+
+Pour plus de détails, voir [BUILD_WITH_TOBI.md](BUILD_WITH_TOBI.md).
+
+#### Méthode 2 : Avec script shell
+
 1. Transférer les fichiers source sur IBM i dans un répertoire IFS (par exemple `/home/myuser/logfori`)
 
 2. Compiler le programme de service :
+
+```bash
+./build.sh MYLIB
+```
+
+#### Méthode 3 : Avec CL
+
+#### Méthode 3 : Avec CL
 
 ```
 CLLE SRCSTMF('/home/myuser/logfori/qcmdsrc/CRTLOGGER.CLLE')
 CALL PGM(CRTLOGGER) PARM('MYLIB')
 ```
 
-Ou manuellement :
+#### Méthode 4 : Manuellement
 
 ```
 CRTSQLRPGI OBJ(MYLIB/LOGGER) +

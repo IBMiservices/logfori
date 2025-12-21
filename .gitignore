@@ -1,24 +1,23 @@
-# Build artifacts
+# Logs et fichiers temporaires
+.logs
+.evfevent
+.env
+*.log
+build.log
+
+# Dépendances TOBI
+dep/
+.ibmi/
+
+# Objets compilés (si synchronisés localement)
 *.MODULE
-*.PGM
 *.SRVPGM
-*.BNDDIR
+*.PGM
 
-# IBM i temporary files
-*.TMP
-*.tmp
-
-# Editor files
+# VS Code
 .vscode/
-.idea/
-*.swp
-*.swo
-*~
+*.code-workspace
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
-
-# Test output
-test_output/
-logs/

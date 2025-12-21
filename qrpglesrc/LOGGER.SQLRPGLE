@@ -16,27 +16,7 @@ ctl-opt nomain thread(*serialize);
 // Prototypes des procédures exportées
 //*************************************************************
 
-dcl-pr Logger_Init end-pr;
-dcl-pr Logger_Term end-pr;
-dcl-pr Logger_Debug varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Info varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Warning varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Error varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Fatal varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_SetLevel;
-  level int(10) const;
-end-pr;
-dcl-pr Logger_GetLevel int(10) end-pr;
+
 
 //*************************************************************
 // Constantes
@@ -107,13 +87,15 @@ end-proc;
 /// @param message Message à enregistrer
 ///
 dcl-proc Logger_Debug export;
-  dcl-pi *n varchar(512) const;
+  dcl-pi *n;
     message varchar(512) const;
   end-pi;
 
   if gLogLevel <= LOG_LEVEL_DEBUG;
     writeLog(LOG_PREFIX_DEBUG : message);
   endif;
+
+  Return;
 end-proc;
 
 ///
@@ -122,7 +104,7 @@ end-proc;
 /// @param message Message à enregistrer
 ///
 dcl-proc Logger_Info export;
-  dcl-pi *n varchar(512) const;
+  dcl-pi *n;
     message varchar(512) const;
   end-pi;
 
@@ -137,7 +119,7 @@ end-proc;
 /// @param message Message à enregistrer
 ///
 dcl-proc Logger_Warning export;
-  dcl-pi *n varchar(512) const;
+  dcl-pi *n;
     message varchar(512) const;
   end-pi;
 
@@ -152,7 +134,7 @@ end-proc;
 /// @param message Message à enregistrer
 ///
 dcl-proc Logger_Error export;
-  dcl-pi *n varchar(512) const;
+  dcl-pi *n;
     message varchar(512) const;
   end-pi;
 
@@ -167,7 +149,7 @@ end-proc;
 /// @param message Message à enregistrer
 ///
 dcl-proc Logger_Fatal export;
-  dcl-pi *n varchar(512) const;
+  dcl-pi *n;
     message varchar(512) const;
   end-pi;
 

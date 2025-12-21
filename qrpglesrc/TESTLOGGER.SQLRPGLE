@@ -6,43 +6,14 @@
 /// fournies par le programme de service LOGGER.
 ///
 
-ctl-opt dftactgrp(*no) actgrp(*new) bnddir('LOGGER');
+ctl-opt dftactgrp(*no) actgrp(*new) bnddir('SERVICE');
 
 //*************************************************************
 // Prototypes des fonctions du service LOGGER
 //*************************************************************
 
-dcl-pr Logger_Init extproc('Logger_Init') end-pr;
-dcl-pr Logger_Term extproc('Logger_Term') end-pr;
-dcl-pr Logger_Debug extproc('Logger_Debug') varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Info extproc('Logger_Info') varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Warning extproc('Logger_Warning') varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Error extproc('Logger_Error') varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_Fatal extproc('Logger_Fatal') varchar(512) const;
-  message varchar(512) const;
-end-pr;
-dcl-pr Logger_SetLevel extproc('Logger_SetLevel');
-  level int(10) const;
-end-pr;
-dcl-pr Logger_GetLevel int(10) extproc('Logger_GetLevel') end-pr;
+/copy 'qcpysrc,loggerapi'
 
-//*************************************************************
-// Constantes pour les niveaux de log
-//*************************************************************
-
-dcl-c LOG_LEVEL_DEBUG 0;
-dcl-c LOG_LEVEL_INFO 1;
-dcl-c LOG_LEVEL_WARNING 2;
-dcl-c LOG_LEVEL_ERROR 3;
-dcl-c LOG_LEVEL_FATAL 4;
 
 //*************************************************************
 // Programme principal

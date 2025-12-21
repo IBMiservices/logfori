@@ -1,0 +1,49 @@
+# Exemple de workflow GitHub Actions pour LOGFORI
+# Ce fichier montre comment compiler et tester le projet dans un pipeline CI/CD
+
+name: Build and Test LOGFORI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build on IBM i
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.IBMI_SSH_KEY }}
+    
+    - name: Transfer files to IBM i
+      run: |
+        scp -r -o StrictHostKeyChecking=no \
+          ./* ${{ secrets.IBMI_USER }}@${{ secrets.IBMI_HOST }}:/home/${{ secrets.IBMI_USER }}/logfori/
+    
+    - name: Build with TOBI
+      run: |
+        ssh ${{ secrets.IBMI_USER }}@${{ secrets.IBMI_HOST }} \
+          "cd /home/${{ secrets.IBMI_USER }}/logfori && makei OBJLIB=CILIB clean all"
+    
+    - name: Run tests
+      run: |
+        ssh ${{ secrets.IBMI_USER }}@${{ secrets.IBMI_HOST }} \
+          "cd /home/${{ secrets.IBMI_USER }}/logfori && makei OBJLIB=CILIB test"
+    
+    - name: Verify service program
+      run: |
+        ssh ${{ secrets.IBMI_USER }}@${{ secrets.IBMI_HOST }} \
+          "system 'DSPSRVPGM SRVPGM(CILIB/LOGGER)'"
+
+# Configuration des secrets requis dans GitHub :
+# - IBMI_SSH_KEY : Clé SSH privée pour se connecter à IBM i
+# - IBMI_USER : Nom d'utilisateur IBM i
+# - IBMI_HOST : Adresse IP ou hostname du système IBM i

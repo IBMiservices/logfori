@@ -1,0 +1,17 @@
+{
+  "description": "IBM i logging service program with thread-safe API",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "build": {
+    "objlib": "&CURLIB",
+    "tgtCcsid": "297"
+  },
+  "includePaths": [
+    "qrpglesrc"
+  ],
+  "repository": "https://github.com/IBMiservices/logfori",
+  "curlib": "&CURLIB",
+  "includePath": [
+    "/qcpysrc"
+  ]
+}

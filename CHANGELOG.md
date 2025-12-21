@@ -9,7 +9,21 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Ajouté
 
-- Rien pour le moment
+- Support complet pour IBM i TOBI (Tool for Building ILE)
+  - Configuration `iproj.json` avec métadonnées du projet
+  - `Rules.mk` avec cibles Make automatiques (all, service, test, clean)
+  - Documentation complète dans `BUILD_WITH_TOBI.md`
+  - Script de validation `validate_tobi.sh`
+  - Exemple de workflow GitHub Actions (`.github/workflows/build-example.yml.disabled`)
+- Amélioration du `.gitignore` pour inclure les artefacts TOBI
+- Mise à jour du README avec les méthodes de compilation TOBI
+- Mise à jour des instructions pour agents IA avec informations TOBI
+
+### Modifié
+
+- Réorganisation de la documentation de compilation dans README.md
+- Instructions Copilot enrichies avec workflows TOBI
+- Priorité donnée à TOBI comme méthode de compilation recommandée
 
 ## [1.0.0] - 2025-12-20
 
