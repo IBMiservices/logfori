@@ -76,6 +76,24 @@ LoggerTerm();
 *inlr = *on;
 ```
 
+### Synchronisation automatique avec LOG du job
+
+```rpgle
+**FREE
+
+ctl-opt dftactgrp(*no) actgrp(*new) bnddir('SERVICES');
+
+/copy qcpysrc,loggerapi
+
+// Synchronise automatiquement avec le paramètre LOG du job IBM i
+LoggerInitFromJobLog();
+
+LoggerInfo('Niveau ajusté selon LOG du job');
+LoggerDebug('Ce message apparaît si LOG(4 00 *SECLVL)');
+
+LoggerTerm();
+```
+
 Voir [qrpglesrc/EXAMPLE.PGM.SQLRPGLE](qrpglesrc/EXAMPLE.PGM.SQLRPGLE) pour un exemple complet.
 
 ### Niveaux de journalisation
@@ -121,7 +139,29 @@ La commande `makei test` compile le service LOGGER et le programme de test. Vous
 ### Procédures d'initialisation
 
 #### `LoggerInit()`
-Initialise le service de journalisation. Doit être appelé avant toute autre fonction.
+Initialise le service de journalisation avec le niveau INFO par défaut. Doit être appelé avant toute autre fonction.
+
+#### `LoggerInitFromJobLog()`
+Initialise le service et **synchronise automatiquement** le niveau de journalisation avec le paramètre `LOG` du job IBM i courant.
+
+**Mapping LOG → LOGFORI :**
+- `LOG(4 00 *SECLVL)` → `LOG_LEVEL_DEBUG` (tous messages + détails)
+- `LOG(* 00-19 *)` → `LOG_LEVEL_INFO` (messages informatifs)
+- `LOG(* 20-29 *)` → `LOG_LEVEL_WARNING` (avertissements)
+- `LOG(* 30-39 *)` → `LOG_LEVEL_ERROR` (erreurs)
+- `LOG(* 40+ *)` → `LOG_LEVEL_FATAL` (erreurs critiques)
+
+**Utilisation recommandée dans les jobs SBMJOB :**
+```cl
+/* Développement/Debug */
+SBMJOB CMD(CALL PGM(MONPROG)) LOG(4 00 *SECLVL)
+
+/* Production normale */
+SBMJOB CMD(CALL PGM(MONPROG)) LOG(4 00 *MSG)
+
+/* Surveillance critique uniquement */
+SBMJOB CMD(CALL PGM(MONPROG)) LOG(3 30 *MSG)
+```
 
 #### `LoggerTerm()`
 Termine le service de journalisation proprement.
@@ -199,6 +239,33 @@ LoggerSetLevel(LOG_LEVEL_WARNING);
 // Niveau ERROR : affiche seulement ERROR et FATAL
 LoggerSetLevel(LOG_LEVEL_ERROR);
 ```
+
+### Intégration avec les jobs planifiés IBM i
+
+Pour les jobs planifiés (via `SBMJOB` ou `ADDJOBSCDE`), utilisez `LoggerInitFromJobLog()` pour une configuration automatique :
+
+```rpgle
+**FREE
+ctl-opt dftactgrp(*no) actgrp(*new) bnddir('SERVICES');
+
+/copy qcpysrc,loggerapi
+
+// Le niveau sera automatiquement ajusté selon le LOG du job
+LoggerInitFromJobLog();
+
+LoggerInfo('Job planifié démarré');
+LoggerDebug('Détails visibles uniquement en mode DEBUG');
+
+// Traitement...
+
+LoggerTerm();
+```
+
+**Avantages :**
+- Configuration centralisée dans la description du job
+- Pas de recompilation pour changer le niveau de log
+- Cohérence avec les standards IBM i
+- Adaptation automatique selon l'environnement (DEV/TEST/PROD)
 
 ### Thread Safety
 

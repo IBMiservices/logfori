@@ -10,6 +10,7 @@ STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('LOGGER V1.0')
   /* Procédures d'initialisation et de terminaison               */
   /*--------------------------------------------------------------*/
   EXPORT SYMBOL(LoggerInit)
+  EXPORT SYMBOL(LoggerInitFromJobLog)
   EXPORT SYMBOL(LoggerTerm)
 
   /*--------------------------------------------------------------*/

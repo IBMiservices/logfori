@@ -55,6 +55,15 @@ dcl-pr system int(10) extproc('system');
   command pointer value options(*string);
 end-pr;
 
+dcl-pr QUSRJOBI extproc('QUSRJOBI');
+  rcvvar char(32767) options(*varsize);
+  rcvlen int(10) const;
+  format char(8) const;
+  jobnam char(26) const;
+  jobint char(16) const;
+error char(32767) options(*varsize:*nopass);
+end-pr;
+
 //*************************************************************
 // Implémentation des procédures
 //*************************************************************
@@ -68,6 +77,79 @@ dcl-proc LoggerInit export;
     gLogLevel = LOG_LEVEL_INFO;
     // Ne pas logger ici pour éviter la récursion pendant l'initialisation
   endif;
+
+  Return;
+end-proc;
+
+///
+/// LoggerInitFromJobLog - Initialise et synchronise avec le paramètre LOG du job
+///
+/// Cette procédure initialise le service et configure automatiquement le niveau
+/// de journalisation en fonction du paramètre LOG du job IBM i courant.
+///
+/// Mapping LOG -> LOGFORI:
+/// - LOG(4 00 *SECLVL) -> DEBUG (tous les détails)
+/// - LOG(4 00 *MSG) avec sévérité 00-19 -> INFO
+/// - LOG(* 20-29 *) -> WARNING
+/// - LOG(* 30-39 *) -> ERROR
+/// - LOG(* 40+ *) -> FATAL
+///
+dcl-proc LoggerInitFromJobLog export;
+  dcl-ds jobi0400 qualified;
+    bytesRet int(10);
+    bytesAvail int(10);
+    jobName char(10);
+    userName char(10);
+    jobNumber char(6);
+    jobIntID char(16);
+    jobStatus char(10);
+    jobType char(1);
+    jobSubtype char(1);
+    reserved char(2);
+    *n char(56); // Filler jusqu'à offset 116
+    logLevel int(10) pos(117);
+    logSeverity int(10) pos(121);
+    logText char(10) pos(125);
+  end-ds;
+
+  dcl-ds errorDS qualified;
+    bytesProvided int(10) inz(0);
+  end-ds;
+
+  // Initialiser le service
+  if not gInitialized;
+    gInitialized = *on;
+    gLogLevel = LOG_LEVEL_INFO; // Valeur par défaut
+  endif;
+
+  // Récupérer les infos du job courant
+  QUSRJOBI(jobi0400 : %size(jobi0400) : 'JOBI0400' : '*' : '' : errorDS);
+
+  // Mapper le niveau LOG IBM i vers LOGFORI
+  select;
+    // LOG(4 00 *SECLVL) = DEBUG
+    when jobi0400.logLevel = 4 and jobi0400.logSeverity = 0
+         and %trim(jobi0400.logText) = '*SECLVL';
+      gLogLevel = LOG_LEVEL_DEBUG;
+
+    // Sévérité 0-19 = INFO
+    when jobi0400.logSeverity < 20;
+      gLogLevel = LOG_LEVEL_INFO;
+
+    // Sévérité 20-29 = WARNING
+    when jobi0400.logSeverity < 30;
+      gLogLevel = LOG_LEVEL_WARNING;
+
+    // Sévérité 30-39 = ERROR
+    when jobi0400.logSeverity < 40;
+      gLogLevel = LOG_LEVEL_ERROR;
+
+    // Sévérité 40+ = FATAL
+    other;
+      gLogLevel = LOG_LEVEL_FATAL;
+  endsl;
+
+  Return;
 end-proc;
 
 ///
@@ -79,6 +161,8 @@ dcl-proc LoggerTerm export;
     writeLog(LOG_PREFIX_INFO : 'Service de journalisation terminé');
     gInitialized = *off;
   endif;
+
+  Return;
 end-proc;
 
 ///
@@ -111,6 +195,8 @@ dcl-proc LoggerInfo export;
   if gLogLevel <= LOG_LEVEL_INFO;
     writeLog(LOG_PREFIX_INFO : message);
   endif;
+
+  Return;
 end-proc;
 
 ///
@@ -126,6 +212,8 @@ dcl-proc LoggerWarning export;
   if gLogLevel <= LOG_LEVEL_WARNING;
     writeLog(LOG_PREFIX_WARNING : message);
   endif;
+
+  Return;
 end-proc;
 
 ///
@@ -141,6 +229,8 @@ dcl-proc LoggerError export;
   if gLogLevel <= LOG_LEVEL_ERROR;
     writeLog(LOG_PREFIX_ERROR : message);
   endif;
+
+  Return;
 end-proc;
 
 ///
@@ -156,6 +246,8 @@ dcl-proc LoggerFatal export;
   if gLogLevel <= LOG_LEVEL_FATAL;
     writeLog(LOG_PREFIX_FATAL : message);
   endif;
+
+  Return;
 end-proc;
 
 ///
@@ -171,6 +263,8 @@ dcl-proc LoggerSetLevel export;
   if level >= LOG_LEVEL_DEBUG and level <= LOG_LEVEL_FATAL;
     gLogLevel = level;
   endif;
+
+  Return;
 end-proc;
 
 ///
@@ -216,4 +310,6 @@ dcl-proc writeLog;
   // Optionnel: Écrire dans QSYSOPR (décommenté si nécessaire)
   // cmd = 'SNDMSG MSG(''' + %trim(message) + ''') TOUSR(QSYSOPR)';
   // system(%trim(cmd));
+
+  Return;
 end-proc;

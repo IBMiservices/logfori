@@ -18,6 +18,8 @@
 
 dcl-pr LoggerInit;
 end-pr;
+dcl-pr LoggerInitFromJobLog;
+end-pr;
 dcl-pr LoggerTerm;
 end-pr;
 dcl-pr LoggerDebug;
