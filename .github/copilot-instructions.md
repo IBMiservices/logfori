@@ -30,6 +30,73 @@ ctl-opt nomain thread(*serialize);  // Obligatoire pour modules service
 // Commentaires: Français avec documentation ILEDoc (///)
 ```
 
+### Documentation ILEDocs
+
+Le projet suit le standard [ILEDocs](https://codefori.github.io/docs/developing/iledocs/) pour la documentation du code. Format obligatoire :
+
+**Structure d'un bloc ILEDocs :**
+1. Commence avec `///` (début du bloc)
+2. Première ligne : **Titre de la procédure** (sans tiret ni "///")
+3. Lignes suivantes : **Description détaillée**
+4. Tags après la description (voir ci-dessous)
+5. Termine avec `///` (fin du bloc)
+
+**Exemple complet :**
+```rpgle
+///
+// LoggerInfo
+// Enregistre un message d'information si le niveau de log le permet.
+//
+// @param message Message à enregistrer
+///
+dcl-proc LoggerInfo export;
+  dcl-pi *n;
+    message varchar(512) const;
+  end-pi;
+  
+  // Implémentation...
+end-proc;
+```
+
+**Tags ILEDocs disponibles :**
+- `@param` (multi-lignes) : Description du paramètre
+- `@return` (multi-lignes) : Description de la valeur de retour
+- `@deprecated` (multi-lignes) : Raison de dépréciation et remplacement
+- `@author` (ligne simple) : Auteur du code source
+- `@date` (ligne simple) : Date (format libre)
+- `@version` (ligne simple) : Version du module
+- `@link` (multi-lignes) : `@link http://url Description`
+- `@warning` (multi-lignes) : Avertissement important
+- `@info` (multi-lignes) : Information complémentaire
+- `@throws` (multi-lignes) : ID et description des messages d'échappement
+
+**Règles importantes :**
+- **NE PAS** mettre de `///` au milieu d'un bloc (seulement au début et à la fin)
+- **NE PAS** utiliser de tiret après le titre (ex: ~~`// LoggerInit - Description`~~)
+- Chaque paramètre doit avoir son tag `@param` avec description
+- La première ligne du bloc est toujours le titre
+- Documentation optionnelle mais meilleure doc = meilleure intellisense
+
+**Contre-exemples à éviter :**
+```rpgle
+// ❌ INCORRECT - /// au milieu du bloc
+///
+/// LoggerInfo - Description
+///
+/// @param message Description
+///
+dcl-proc LoggerInfo export;
+
+// ✅ CORRECT
+///
+// LoggerInfo
+// Description de la procédure.
+//
+// @param message Description du paramètre
+///
+dcl-proc LoggerInfo export;
+```
+
 ### Déclarations obligatoires
 Toutes les procédures exportées nécessitent **trois déclarations** :
 1. Prototype dans LOGGER.SQLRPGLE (section prototypes exportés) - **OPTIONNEL** pour modules nomain

@@ -1,16 +1,16 @@
 **FREE
 ///
-/// LOGGER - Service de journalisation pour IBM i
-///
-/// Ce module fournit des fonctions de log pour les applications IBM i.
-/// Il permet d'écrire des messages dans le journal système avec différents
-/// niveaux de sévérité.
-///
-/// @author IBM i Services
-/// @version 1.0.0
+// LOGGER - Service de journalisation pour IBM i
+//
+// Ce module fournit des fonctions de log pour les applications IBM i.
+// Il permet d'écrire des messages dans le journal système avec différents
+// niveaux de sévérité.
+//
+// @author IBM i Services
+// @version 1.0.0
 ///
 
-ctl-opt nomain thread(*serialize);
+ctl-opt nomain thread(*serialize) option(*nodebugio:*srcstmt);
 
 //*************************************************************
 // Prototypes des procédures exportées
@@ -55,7 +55,7 @@ dcl-pr system int(10) extproc('system');
   command pointer value options(*string);
 end-pr;
 
-dcl-pr QUSRJOBI extproc('QUSRJOBI');
+dcl-pr QUSRJOBI extpgm('QUSRJOBI');
   rcvvar char(32767) options(*varsize);
   rcvlen int(10) const;
   format char(8) const;
@@ -69,7 +69,9 @@ end-pr;
 //*************************************************************
 
 ///
-/// LoggerInit - Initialise le service de journalisation
+// LoggerInit
+// Initialise le service de journalisation sans logger de message
+// pour éviter la récursion pendant l'initialisation.
 ///
 dcl-proc LoggerInit export;
   if not gInitialized;
@@ -82,20 +84,21 @@ dcl-proc LoggerInit export;
 end-proc;
 
 ///
-/// LoggerInitFromJobLog - Initialise et synchronise avec le paramètre LOG du job
-///
-/// Cette procédure initialise le service et configure automatiquement le niveau
-/// de journalisation en fonction du paramètre LOG du job IBM i courant.
-///
-/// Mapping LOG -> LOGFORI:
-/// - LOG(4 00 *SECLVL) -> DEBUG (tous les détails)
-/// - LOG(4 00 *MSG) avec sévérité 00-19 -> INFO
-/// - LOG(* 20-29 *) -> WARNING
-/// - LOG(* 30-39 *) -> ERROR
-/// - LOG(* 40+ *) -> FATAL
+// LoggerInitFromJobLog
+// Initialise et synchronise avec le paramètre LOG du job.
+//
+// Cette procédure initialise le service et configure automatiquement le niveau
+// de journalisation en fonction du paramètre LOG du job IBM i courant.
+//
+// Mapping LOG -> LOGFORI:
+// - LOG(4 00 *SECLVL) -> DEBUG (tous les détails)
+// - LOG(4 00 *MSG) avec sévérité 00-19 -> INFO
+// - LOG(* 20-29 *) -> WARNING
+// - LOG(* 30-39 *) -> ERROR
+// - LOG(* 40+ *) -> FATAL
 ///
 dcl-proc LoggerInitFromJobLog export;
-  dcl-ds jobi0400 qualified;
+  dcl-ds JOBI0500 qualified;
     bytesRet int(10);
     bytesAvail int(10);
     jobName char(10);
@@ -105,16 +108,18 @@ dcl-proc LoggerInitFromJobLog export;
     jobStatus char(10);
     jobType char(1);
     jobSubtype char(1);
-    reserved char(2);
-    *n char(56); // Filler jusqu'à offset 116
-    logLevel int(10) pos(117);
-    logSeverity int(10) pos(121);
-    logText char(10) pos(125);
+    *n char(2);  // reserved
+    endSeverity int(10);
+    logSeverity int(10);
+    logLevel char(1);
+    logText char(10);
   end-ds;
 
   dcl-ds errorDS qualified;
     bytesProvided int(10) inz(0);
   end-ds;
+
+  dcl-s wLogLevel int(10);
 
   // Initialiser le service
   if not gInitialized;
@@ -123,25 +128,28 @@ dcl-proc LoggerInitFromJobLog export;
   endif;
 
   // Récupérer les infos du job courant
-  QUSRJOBI(jobi0400 : %size(jobi0400) : 'JOBI0400' : '*' : '' : errorDS);
+  QUSRJOBI(JOBI0500 : %size(JOBI0500) : 'JOBI0500' : '*' : '' : errorDS);
+
+  // Convertir le niveau de log (char) en numérique
+  wLogLevel = %int(JOBI0500.logLevel);
 
   // Mapper le niveau LOG IBM i vers LOGFORI
   select;
     // LOG(4 00 *SECLVL) = DEBUG
-    when jobi0400.logLevel = 4 and jobi0400.logSeverity = 0
-         and %trim(jobi0400.logText) = '*SECLVL';
+    when wLogLevel = 4 and JOBI0500.logSeverity = 0
+         and %trim(JOBI0500.logText) = '*SECLVL';
       gLogLevel = LOG_LEVEL_DEBUG;
 
     // Sévérité 0-19 = INFO
-    when jobi0400.logSeverity < 20;
+    when JOBI0500.logSeverity < 20;
       gLogLevel = LOG_LEVEL_INFO;
 
     // Sévérité 20-29 = WARNING
-    when jobi0400.logSeverity < 30;
+    when JOBI0500.logSeverity < 30;
       gLogLevel = LOG_LEVEL_WARNING;
 
     // Sévérité 30-39 = ERROR
-    when jobi0400.logSeverity < 40;
+    when JOBI0500.logSeverity < 40;
       gLogLevel = LOG_LEVEL_ERROR;
 
     // Sévérité 40+ = FATAL
@@ -153,7 +161,8 @@ dcl-proc LoggerInitFromJobLog export;
 end-proc;
 
 ///
-/// LoggerTerm - Termine le service de journalisation
+// LoggerTerm
+// Termine le service de journalisation et log un message avant la fermeture.
 ///
 dcl-proc LoggerTerm export;
   if gInitialized;
@@ -166,9 +175,10 @@ dcl-proc LoggerTerm export;
 end-proc;
 
 ///
-/// LoggerDebug - Enregistre un message de débogage
-///
-/// @param message Message à enregistrer
+// LoggerDebug
+// Enregistre un message de débogage si le niveau de log le permet.
+//
+// @param message Message à enregistrer
 ///
 dcl-proc LoggerDebug export;
   dcl-pi *n;
@@ -183,9 +193,10 @@ dcl-proc LoggerDebug export;
 end-proc;
 
 ///
-/// LoggerInfo - Enregistre un message d'information
-///
-/// @param message Message à enregistrer
+// LoggerInfo
+// Enregistre un message d'information si le niveau de log le permet.
+//
+// @param message Message à enregistrer
 ///
 dcl-proc LoggerInfo export;
   dcl-pi *n;
@@ -200,9 +211,10 @@ dcl-proc LoggerInfo export;
 end-proc;
 
 ///
-/// LoggerWarning - Enregistre un message d'avertissement
-///
-/// @param message Message à enregistrer
+// LoggerWarning
+// Enregistre un message d'avertissement si le niveau de log le permet.
+//
+// @param message Message à enregistrer
 ///
 dcl-proc LoggerWarning export;
   dcl-pi *n;
@@ -217,9 +229,10 @@ dcl-proc LoggerWarning export;
 end-proc;
 
 ///
-/// LoggerError - Enregistre un message d'erreur
-///
-/// @param message Message à enregistrer
+// LoggerError
+// Enregistre un message d'erreur si le niveau de log le permet.
+//
+// @param message Message à enregistrer
 ///
 dcl-proc LoggerError export;
   dcl-pi *n;
@@ -234,9 +247,10 @@ dcl-proc LoggerError export;
 end-proc;
 
 ///
-/// LoggerFatal - Enregistre un message d'erreur fatale
-///
-/// @param message Message à enregistrer
+// LoggerFatal
+// Enregistre un message d'erreur fatale si le niveau de log le permet.
+//
+// @param message Message à enregistrer
 ///
 dcl-proc LoggerFatal export;
   dcl-pi *n;
@@ -251,9 +265,10 @@ dcl-proc LoggerFatal export;
 end-proc;
 
 ///
-/// LoggerSetLevel - Définit le niveau de journalisation
-///
-/// @param level Niveau de journalisation (0=DEBUG, 1=INFO, 2=WARNING, 3=ERROR, 4=FATAL)
+// LoggerSetLevel
+// Définit le niveau de journalisation.
+//
+// @param level Niveau de journalisation (0=DEBUG, 1=INFO, 2=WARNING, 3=ERROR, 4=FATAL)
 ///
 dcl-proc LoggerSetLevel export;
   dcl-pi *n;
@@ -268,9 +283,10 @@ dcl-proc LoggerSetLevel export;
 end-proc;
 
 ///
-/// LoggerGetLevel - Retourne le niveau de journalisation actuel
-///
-/// @return Niveau de journalisation actuel
+// LoggerGetLevel
+// Retourne le niveau de journalisation actuel.
+//
+// @return Niveau de journalisation actuel (0=DEBUG, 1=INFO, 2=WARNING, 3=ERROR, 4=FATAL)
 ///
 dcl-proc LoggerGetLevel export;
   dcl-pi *n int(10) end-pi;
@@ -283,10 +299,11 @@ end-proc;
 //*************************************************************
 
 ///
-/// writeLog - Écrit un message dans le journal système
-///
-/// @param prefix Préfixe du message (niveau de log)
-/// @param message Message à écrire
+// writeLog
+// Écrit un message dans le journal système avec un préfixe et un timestamp.
+//
+// @param prefix Préfixe du message (niveau de log)
+// @param message Message à écrire
 ///
 dcl-proc writeLog;
   dcl-pi *n;
