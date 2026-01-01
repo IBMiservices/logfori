@@ -12,7 +12,7 @@ ctl-opt dftactgrp(*no) actgrp(*new) bnddir('SERVICES');
 // Inclure l'API du service LOGGER
 //*************************************************************
 
-/copy qrpglesrc,loggerapi
+/copy 'loggerapi.rpgleinc'
 
 //*************************************************************
 // Programme principal
