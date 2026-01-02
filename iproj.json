@@ -12,6 +12,6 @@
   "repository": "https://github.com/IBMiservices/logfori",
   "curlib": "&CURLIB",
   "includePath": [
-    "/home/OLIVIER/builds/logfori/qcpysrc"
+    "qcpysrc"
   ]
 }
