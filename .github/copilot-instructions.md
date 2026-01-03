@@ -123,55 +123,42 @@ end-proc;
 ### Compilation avec TOBI
 
 ```bash
-makei compile             # Compile le service complet (module + *SRVPGM + BNDDIR)
-makei OBJLIB=MYLIB compile # Spécifier une bibliothèque cible
-makei test                # Compile le programme de test
-makei example             # Compile le programme d'exemple
-makei clean               # Nettoie les objets compilés
+makei build               # Compile le service complet (module + *SRVPGM + BNDDIR)
+makei build [-h] [-t <target> | -d <subdir>] [-o <options>] [--tobi-path <path>]
+            [-e <var>=<value>]
+makei compile # compile un objet
+makei compile [-h] (-f <filename> | --files <filepaths>) [-o <options>]
+              [-e <var>=<value>] [--tobi-path <path>]
+makei compile -f testlogger.rpgle # Compile le programme de test
+makei compile -f example.rpgle    # Compile le programme d'exemple
 ```
 
-TOBI utilise les fichiers `Rules.mk` dans chaque répertoire pour définir les dépendances. Configuration dans [iproj.json](../iproj.json).
+TOBI utilise les fichiers `Rules.mk` dans chaque répertoire pour définir les dépendances. Configuration du projet dans [iproj.json](../iproj.json).
 
 **Avantages TOBI** :
 - Gestion automatique des dépendances entre objets
-- Parallélisation des compilations
 - Standard IBM i moderne (CI/CD friendly)
 - Reconstruction intelligente (seulement ce qui a changé)
-- Pas besoin de créer la bibliothèque manuellement
-
-### Cibles de compilation
-
-- `compile` : Compile LOGGER.MODULE → LOGGER.SRVPGM → SERVICES.BNDDIR
-- `test` : Compile le service + TESTLOGGER.PGM (n'exécute pas le programme)
-- `example` : Compile EXAMPLE.PGM qui utilise le service
-- `clean` : Supprime tous les objets compilés
 
 ### Test et validation
 
 ```bash
 # Compiler le programme de test
-makei test
+makei compile -f testlogger.rpgle
 
 # Exécuter manuellement le programme de test
 system "CALL &CURLIB/TESTLOGGER"
 
 # Compiler le programme d'exemple
-makei example
+makei compile -f example.rpgle
+
+# Exécuter manuellement le programme de test
+system "CALL &CURLIB/TESTLOGGER"
 ```
 
 Le programme de test [TESTLOGGER.PGM.RPGLE](../qrpglesrc/TESTLOGGER.PGM.RPGLE) change dynamiquement `gLogLevel` pour vérifier le filtrage. 
 
 Le programme d'exemple [EXAMPLE.PGM.SQLRPGLE](../qrpglesrc/EXAMPLE.PGM.SQLRPGLE) montre une utilisation basique avec `/copy qcpysrc,loggerapi`.
-
-### Journalisation des erreurs de compilation
-Les erreurs de compilation apparaissent dans le job log. Pour déboguer :
-```bash
-# Voir les derniers messages du job
-system "DSPJOBLOG"
-
-# Ou compiler manuellement en mode interactif pour voir les erreurs
-system "CRTSQLRPGI OBJ(MYLIB/LOGGER) SRCSTMF('qrpglesrc/LOGGER.SQLRPGLE') OBJTYPE(*MODULE)"
-```
 
 ## Patterns spécifiques à IBM i
 
@@ -217,7 +204,7 @@ LOGGER.BND définit `SIGNATURE('LOGGER V1.0')` - **Important** : changer la sign
 
 ### Utilisation de LOGGERAPI.RPGLEINC
 
-Les programmes clients peuvent utiliser `/copy` au lieu de déclarer tous les prototypes manuellement :
+Les programmes clients peuvent utiliser `/copy` `/include` au lieu de déclarer tous les prototypes manuellement :
 
 ```rpgle
 **FREE
@@ -235,12 +222,12 @@ LoggerTerm();
 ```json
 {
   "includePath": [
-    "/home/OLIVIER/builds/logfori/qcpysrc"
+    "qcpysrc"
   ]
 }
 ```
 
-Le fichier RPGLEINC contient des gardes de compilation (`/IF NOT DEFINED(LOGGERAPI)`) pour éviter les inclusions doubles.
+Le fichier RPGLEINC contient des directives de compilation (`/IF NOT DEFINED(LOGGERAPI)`) pour éviter les inclusions doubles.
 
 ## Commandes de dépannage
 
@@ -266,7 +253,6 @@ system "CRTSQLRPGI OBJ(MYLIB/LOGGER) SRCSTMF('qrpglesrc/LOGGER.SQLRPGLE') OBJTYP
 
 Si `makei compile` échoue avec "Failed to create LOGGER.SRVPGM", vérifier :
 - Le fichier `.logs/joblog.json` contient les détails de l'erreur de compilation
-- La commande exacte utilisée est visible dans la sortie de makei avec `-v`
 - Module LOGGER non créé ou incomplet - vérifier d'abord `WRKOBJ OBJ(&CURLIB/LOGGER) OBJTYPE(*MODULE)`
 
 **Dépendances TOBI** :
