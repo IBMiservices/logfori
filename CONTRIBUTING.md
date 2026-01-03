@@ -50,21 +50,20 @@ end-proc;
 
 Avant de soumettre une Pull Request :
 
-1. Compiler le service avec `makei compile`
-2. Compiler les tests avec `makei test`
-3. Exécuter le programme de test : `system "CALL &CURLIB/TESTLOGGER"`
-4. Vérifier que tous les niveaux de log fonctionnent correctement
-5. Compiler l'exemple avec `makei example`
+
+1. Installer Tobi
+2. Utiliser Vscode avec les extensions du développement pack IBM i
+3. Compiler le service avec `makei build` 
+4. Exécuter le programme de test : `system "CALL &CURLIB/TESTLOGGER"`
+5. Vérifier que tous les niveaux de log fonctionnent correctement
 6. Tester avec vos changements dans un programme réel
 
 ### Commandes TOBI utiles
 
 ```bash
-makei compile        # Compile le service LOGGER
-makei test          # Compile le programme de test
-makei example       # Compile le programme d'exemple
-makei clean         # Nettoie les objets compilés
-makei OBJLIB=MYLIB compile  # Compile dans une bibliothèque spécifique
+makei build                       # Construit le service LOGGER
+makei compile -f TESTLOGGER.RPGLE # Compile le programme de test
+makei compike - f example.rpgle   # Compile le programme d'exemple
 
 # Exécuter les tests (après compilation)
 CALL &CURLIB/TESTLOGGER"```
