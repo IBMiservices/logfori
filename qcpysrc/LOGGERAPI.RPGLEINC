@@ -1,13 +1,14 @@
 **FREE
-///
-/// LOGGERAPI - Fichier de copie pour l'API du service LOGGER
-///
-/// Ce fichier peut être utilisé avec /COPY ou /INCLUDE dans vos programmes
-/// pour obtenir toutes les déclarations nécessaires.
-///
-/// Usage:
-///   /copy logfori/qrpglesrc,loggerapi
-///
+//
+// LOGGERAPI
+// Fichier de copie pour l'API du service LOGGER.
+//
+// Ce fichier peut être utilisé avec /COPY ou /INCLUDE dans vos programmes
+// pour obtenir toutes les déclarations nécessaires.
+//
+// Usage:
+//   /copy logfori/qrpglesrc,loggerapi
+//
 
 /IF NOT DEFINED(LOGGERAPI)
 /DEFINE LOGGERAPI

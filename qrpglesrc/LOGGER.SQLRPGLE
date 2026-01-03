@@ -1,6 +1,7 @@
 **FREE
 ///
-// LOGGER - Service de journalisation pour IBM i
+// LOGGER
+// Service de journalisation pour IBM i.
 //
 // Ce module fournit des fonctions de log pour les applications IBM i.
 // Il permet d'écrire des messages dans le journal système avec différents
@@ -70,6 +71,7 @@ end-pr;
 
 ///
 // LoggerInit
+//
 // Initialise le service de journalisation sans logger de message
 // pour éviter la récursion pendant l'initialisation.
 ///
@@ -162,6 +164,7 @@ end-proc;
 
 ///
 // LoggerTerm
+//
 // Termine le service de journalisation et log un message avant la fermeture.
 ///
 dcl-proc LoggerTerm export;
@@ -176,6 +179,7 @@ end-proc;
 
 ///
 // LoggerDebug
+//
 // Enregistre un message de débogage si le niveau de log le permet.
 //
 // @param message Message à enregistrer
@@ -194,6 +198,7 @@ end-proc;
 
 ///
 // LoggerInfo
+//
 // Enregistre un message d'information si le niveau de log le permet.
 //
 // @param message Message à enregistrer
@@ -212,6 +217,7 @@ end-proc;
 
 ///
 // LoggerWarning
+//
 // Enregistre un message d'avertissement si le niveau de log le permet.
 //
 // @param message Message à enregistrer
@@ -230,6 +236,7 @@ end-proc;
 
 ///
 // LoggerError
+//
 // Enregistre un message d'erreur si le niveau de log le permet.
 //
 // @param message Message à enregistrer
@@ -248,6 +255,7 @@ end-proc;
 
 ///
 // LoggerFatal
+//
 // Enregistre un message d'erreur fatale si le niveau de log le permet.
 //
 // @param message Message à enregistrer
@@ -266,6 +274,7 @@ end-proc;
 
 ///
 // LoggerSetLevel
+//
 // Définit le niveau de journalisation.
 //
 // @param level Niveau de journalisation (0=DEBUG, 1=INFO, 2=WARNING, 3=ERROR, 4=FATAL)
@@ -284,6 +293,7 @@ end-proc;
 
 ///
 // LoggerGetLevel
+//
 // Retourne le niveau de journalisation actuel.
 //
 // @return Niveau de journalisation actuel (0=DEBUG, 1=INFO, 2=WARNING, 3=ERROR, 4=FATAL)
@@ -300,6 +310,7 @@ end-proc;
 
 ///
 // writeLog
+//
 // Écrit un message dans le journal système avec un préfixe et un timestamp.
 //
 // @param prefix Préfixe du message (niveau de log)
