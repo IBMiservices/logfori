@@ -5,7 +5,7 @@ Merci de votre intérêt pour contribuer à LOGFORI ! Ce document explique comme
 ## 📋 Prérequis pour contribuer
 
 - Connaissance d'ILE RPG (format libre de préférence)
-- Accès à un système IBM i (7.3 ou supérieur) pour tester
+- Accès à un système IBM i (7.5 ou supérieur) pour tester
 - Compte GitHub pour soumettre des Pull Requests
 
 ## 🔧 Configuration de l'environnement de développement
