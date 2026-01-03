@@ -4,7 +4,7 @@
 /* Ce fichier définit les exports du programme de service LOGGER   */
 /*==================================================================*/
 
-STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('LOGGER V1.0')
+STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('LOGGER v1.0.0')
 
   /*--------------------------------------------------------------*/
   /* Procédures d'initialisation et de terminaison               */
