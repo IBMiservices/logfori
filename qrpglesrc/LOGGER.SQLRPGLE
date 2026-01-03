@@ -13,21 +13,12 @@
 
 ctl-opt nomain thread(*serialize) option(*nodebugio:*srcstmt);
 
-//*************************************************************
-// Prototypes des procédures exportées
-//*************************************************************
-
-
 
 //*************************************************************
-// Constantes
+// Constantes et API
 //*************************************************************
 
-dcl-c LOG_LEVEL_DEBUG 0;
-dcl-c LOG_LEVEL_INFO 1;
-dcl-c LOG_LEVEL_WARNING 2;
-dcl-c LOG_LEVEL_ERROR 3;
-dcl-c LOG_LEVEL_FATAL 4;
+/copy 'LOGGERAPI.RPGLEINC'
 
 dcl-c LOG_PREFIX_DEBUG 'DEBUG';
 dcl-c LOG_PREFIX_INFO 'INFO';
