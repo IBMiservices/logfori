@@ -306,7 +306,7 @@ Ce projet est sous licence Apache 2.0. Voir le fichier [LICENSE](LICENSE) pour p
 - [IBM i TOBI - Documentation](https://ibm.github.io/ibmi-tobi) - Système de build utilisé
 - [IBM i TOBI - GitHub](https://github.com/IBM/ibmi-tobi) - Code source et issues
 - [IBM i Documentation](https://www.ibm.com/docs/en/i)
-- [ILE RPG Reference](https://www.ibm.com/docs/en/i/7.5?topic=languages-ile-rpg)
+- [ILE RPG Reference]([https://www.ibm.com/docs/en/i/7.5?topic=languages-ile-rpg](https://www.ibm.com/docs/en/i/7.5.0?topic=rpg-ile-reference))
 - [Service Programs](https://www.ibm.com/docs/en/i/7.5?topic=programs-service)
 
 ## ⚠️ Notes
